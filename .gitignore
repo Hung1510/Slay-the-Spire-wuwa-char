@@ -1,0 +1,23 @@
+# .NET / Rider
+bin/
+obj/
+*.user
+.idea/
+
+# Godot
+.godot/
+.import/
+export_presets.cfg
+
+# Build output copied for local testing
+/local-mods-copy/
+
+# Steam Workshop uploader workspace (local records + secrets)
+*-workshop/.sts2-workshop-uploader/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Art working files (keep only exported final assets in repo if desired)
+docs/art/wip/
