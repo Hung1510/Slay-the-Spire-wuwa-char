@@ -1,8 +1,7 @@
 name: Build check
 
-# Sanity-builds the mod project on every push/PR so a broken build never sits unnoticed.
-# NOTE: fill in the actual project path/target framework once `Shorekeeper/` is generated
-# from the official STS2 character template (dotnet new sts2-character).
+# Sanity-builds each character mod project on every push/PR.
+# Add a new job block when a second character is added under characters/.
 
 on:
   push:
@@ -11,7 +10,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build:
+  build-shorekeeper:
     runs-on: windows-latest  # Godot .NET mod builds are most reliably tested on Windows runners
     steps:
       - uses: actions/checkout@v4
@@ -19,10 +18,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'  # confirm against current STS2 MegaDot .NET version
+          dotnet-version: '9.0.x'
 
       - name: Restore
-        run: dotnet restore Shorekeeper/Shorekeeper.csproj
+        run: dotnet restore characters/Shorekeeper/Shorekeeper.csproj
 
       - name: Build
-        run: dotnet build Shorekeeper/Shorekeeper.csproj --configuration Release --no-restore
+        run: dotnet build characters/Shorekeeper/Shorekeeper.csproj --configuration Release --no-restore

@@ -1,92 +1,86 @@
-# Shorekeeper — Slay the Spire 2 Custom Character
+# Wuthering Waves cast for Slay the Spire 2
 
-Play as **Shorekeeper** (Wuthering Waves) in Slay the Spire 2 — a data-archivist support/burst
-hybrid built around **Beacons**, **Prediction stacks**, and her own end-of-run **Qualia Archive**
-progression system.
+Playable Wuthering Waves characters for STS2. Started with Shorekeeper, more planned. Each
+character is its own STS2 character mod project under `characters/`, generated from the
+official BaseLib character template.
 
-> Status: 🚧 early development. See `docs/DESIGN.md` for the full kit spec and `docs/ROADMAP.md`
-> for what's built vs. planned.
+## Status
 
-## Why this exists
+- **Shorekeeper**: early dev, first real gameplay code written against the confirmed BaseLib
+  API. See `docs/characters/Shorekeeper/DESIGN.md` for the kit spec and
+  `characters/Shorekeeper/API_STATUS.md` for what's confirmed vs. still needs checking.
+- Next character: not started.
 
-Inspired by the Acheron (Honkai: Star Rail) mod for STS2 — same ambition, Wuthering Waves flavor:
-a character with a real signature mechanic (not just reskinned vanilla cards), full art pass, and
-a meta-progression hook that gives players a reason to keep running her specifically.
+`docs/ROADMAP.md` is the source of truth for what's actually done, treat this file as an
+overview.
+
+## Why
+
+Same ambition as the Acheron (Honkai: Star Rail) mod on the STS2 workshop, Wuthering Waves cast
+instead. Real signature mechanics per character, not reskinned vanilla cards, plus meta-
+progression hooks so there's a reason to keep running them specifically.
 
 ## Requirements
 
-- .NET SDK (matching whatever MegaDot/Godot .NET version STS2 currently ships — check
-  [BaseLib-StS2 releases](https://github.com/Alchyr/BaseLib-StS2/releases) for the current target)
-- [Rider](https://www.jetbrains.com/rider/) (recommended — Godot requires a `.sln`, which Rider
-  handles more smoothly than current VS)
-- Slay the Spire 2, with [BaseLib](https://github.com/Alchyr/BaseLib-StS2) subscribed on Workshop
-  (or installed manually) for local testing
-- The STS2 mod project templates: `dotnet new install Alchyr.Sts2.Templates`
+- .NET SDK matching current STS2 MegaDot/Godot .NET version, check
+  [BaseLib-StS2 releases](https://github.com/Alchyr/BaseLib-StS2/releases)
+- Rider
+- STS2 with [BaseLib](https://github.com/Alchyr/BaseLib-StS2) installed for local testing
+- `dotnet new install Alchyr.Sts2.Templates`
 
-## Getting started (fresh clone)
+## Adding a character
 
 ```powershell
-# From D:\Project_Programming\
-git clone <this-repo-url> shorekeeper-sts2
-cd shorekeeper-sts2
-
-# If you haven't already, install the official project templates once, globally:
-dotnet new install Alchyr.Sts2.Templates
-
-# The Shorekeeper/ folder was originally generated with:
-#   dotnet new sts2-character -n Shorekeeper
-# (template short name — confirm the exact name with `dotnet new list` after installing,
-# it may differ slightly from this guess)
+cd characters
+mkdir <CharacterName>
+cd <CharacterName>
+dotnet new alchyrsts2charmod --ModAuthor Hung1510
 ```
 
-Open `Shorekeeper/Shorekeeper.sln` in Rider. **Enable "Put solution and project in same
-directory"** if you ever regenerate the project — the STS2 template requires that layout.
+Then add `docs/characters/<CharacterName>/DESIGN.md` before writing code, same pattern as
+Shorekeeper. Check `docs/ROADMAP.md` for the "extract shared pieces" step once a second
+character is actually in progress, don't copy-paste Shorekeeper's power/status base classes
+wholesale.
 
-## Building & local testing
+## Build and test locally
 
-1. Build the project (produces a `.dll` alongside the mod's `.json` manifest and any `.pck`
-   asset bundle).
-2. Copy the build output into your local STS2 `mods/` folder:
-   - Windows: `Steam\steamapps\common\Slay the Spire 2\mods\`
-3. Make sure **BaseLib** is also present and enabled in that same `mods/` folder.
-4. Launch STS2 → Mods menu → enable both → restart (mods compile/load on restart).
-5. Shorekeeper should appear on the character select screen.
+Per character, inside `characters/<CharacterName>/`:
 
-See `docs/BUILD.md` for the exact local copy script once the project is generated.
+1. Build.
+2. The project's own build target copies the output into your STS2 `mods/` folder automatically
+   (see `CopyToModsFolderOnBuild` in the `.csproj`).
+3. Make sure BaseLib is in the same `mods/` folder and enabled.
+4. Mods menu in STS2, enable both, restart.
+5. Character shows up on character select.
 
-## Publishing to Steam Workshop
+## Publishing
 
-Mega Crit ships an official uploader: [`megacrit/sts2-mod-uploader`](https://github.com/megacrit/sts2-mod-uploader).
+Official uploader: [`megacrit/sts2-mod-uploader`](https://github.com/megacrit/sts2-mod-uploader).
 
 ```powershell
-# one-time: create the upload workspace
-ModUploader.exe new -w shorekeeper-workshop
-
-# copy your built mod into shorekeeper-workshop/content/
-# fill in shorekeeper-workshop/workshop.json (title, description, preview image, tags)
-# preview image must be < 1MB
-
-# every subsequent release:
-ModUploader.exe upload -w shorekeeper-workshop
+ModUploader.exe new -w <character>-workshop
+# copy build into <character>-workshop/content/, fill in workshop.json, preview image under 1MB
+ModUploader.exe upload -w <character>-workshop
 ```
 
-Alternatively, the community "Workshop Uploader" mod does this from inside the game if you'd
-rather not touch a command line for releases.
-
-## Repo layout
+## Layout
 
 ```
-shorekeeper-sts2/
-├── Shorekeeper/           # the actual STS2 C# mod project (generated by dotnet new)
-├── docs/
-│   ├── DESIGN.md          # full kit spec: mechanics, card list, relics, Qualia Archive system
-│   ├── ROADMAP.md         # build checklist
-│   ├── BUILD.md           # local build/copy/test steps
-│   └── art/               # art direction notes + AI generation prompts/reference sheet
-└── .github/workflows/     # CI build check on push
+characters/
+  Shorekeeper/             generated STS2 character mod project
+    ShorekeeperCode/        actual C# source (Cards, Powers, Relics, Character, ...)
+    API_STATUS.md            confirmed vs. unconfirmed BaseLib API notes
+docs/
+  ROADMAP.md                 project-wide build checklist
+  characters/
+    Shorekeeper/
+      DESIGN.md               kit spec: mechanics, cards, relics, Qualia Archive
+      BUILD.md                 local build/copy/test steps
+      art/ART_NOTES.md         art direction, AI generation notes
+.github/workflows/           CI build checks
 ```
 
 ## Credits
 
-Inspired by Wuthering Waves' Shorekeeper (developed by Kuro Games). Fan project, not affiliated
-with Kuro Games or Mega Crit. Card/portrait art AI-generated; see `docs/art/` for prompt notes.
+Wuthering Waves characters developed by Kuro Games. Fan project, not affiliated with Kuro Games
+or Mega Crit. Card/portrait art AI-generated, see each character's `art/ART_NOTES.md`.

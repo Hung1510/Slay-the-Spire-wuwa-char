@@ -1,7 +1,7 @@
 # Build & local test
 
 This gets filled in with exact commands once `Shorekeeper/` is generated from the official
-template — the template's own README/wiki is the source of truth for build output paths, since
+template - the template's own README/wiki is the source of truth for build output paths, since
 they can shift between STS2 patches. Rough shape:
 
 1. Build the project in Rider (or `dotnet build`).
